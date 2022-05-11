@@ -14,5 +14,6 @@ simple drowsiness detection application for self-driving cars
 * [Pyimagesearch](https://www.pyimagesearch.com/2017/05/08/drowsiness-detection-opencv/) - this work was inspired from this tutorial
 
 ### TODO: 
-* Add support for Linux. 
-* Add cmake.
+* Make it cross-platform.
+* Add testing.
+* Add Demo.
