@@ -18,3 +18,8 @@ endif()
 add_executable(drowsniess_detection src/main.cpp)
 target_link_libraries(drowsniess_detection PRIVATE dlib::dlib ${OpenCV_LIBS})
 target_include_directories(drowsniess_detection PRIVATE ${OpenCV_INCLUDE_DIRS})
+
+add_custom_command(
+                    TARGET drowsniess_detection PRE_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy_directory
+                    ${CMAKE_SOURCE_DIR}/utils $<TARGET_FILE_DIR:drowsniess_detection>/utils)
