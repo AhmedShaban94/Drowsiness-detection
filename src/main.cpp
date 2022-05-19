@@ -10,12 +10,12 @@
 #include "opencv2\imgproc.hpp"
 #include "opencv2\opencv.hpp"
 
+#include "dlib\gui_widgets.h"
+#include "dlib\image_io.h"
+#include "dlib\image_processing.h"
 #include "dlib\image_processing\frontal_face_detector.h"
 #include "dlib\image_processing\render_face_detections.h"
 #include "dlib\opencv.h"
-#include <dlib\gui_widgets.h>
-#include <dlib\image_io.h>
-#include <dlib\image_processing.h>
 
 void sound_alarm(const std::string& alarmDir)
 {
@@ -27,11 +27,11 @@ double eye_aspect_ratio(const std::vector<dlib::point>& eye)
     // aspect ratio will be near zero during the blink.
 
     // calculate Ecludian distance between two sets of vertical eye landmarks.
-    auto A = (eye[1] - eye[5]).length_squared();
-    auto B = (eye[2] - eye[4]).length_squared();
+    const auto A = (eye[1] - eye[5]).length_squared();
+    const auto B = (eye[2] - eye[4]).length_squared();
 
     // calculate Ecludian distance between horizontal eye landmarks.
-    auto C = (eye[0] - eye[3]).length_squared();
+    const auto C = (eye[0] - eye[3]).length_squared();
 
     return ((A + B) / (2.0 * C));
 }
@@ -39,21 +39,21 @@ double eye_aspect_ratio(const std::vector<dlib::point>& eye)
 int main(void)
 {
     // eye aspect ratio thershold to detect eye blink.
-    const double EYE_ASPECT_RATIO_THRESHOLD = 0.09;
+    constexpr double EYE_ASPECT_RATIO_THRESHOLD = 0.09;
     // # of consecutive frames the eye should be below the aspect ratio
     // threshold to sound alarm
-    const int EYE_ASPECT_RATIO_CONSECUTIVE_FRAMES = 48;
+    constexpr int EYE_ASPECT_RATIO_CONSECUTIVE_FRAMES = 48;
 
     // counter indicates the number of frames the eye closed.
-    double counter = 0;
+    int counter = 0;
 
     // bool indicates if the eye is closed or not.
     bool alarm_on = false;
     // directory to sound alarm file.
 
-    std::string alarmdDir = R"(utils\alarm.wav)";
+    const std::string alarmdDir = R"(utils\alarm.wav)";
     // directory to shape predictor pretrained model.
-    std::string shapePredictorDir
+    const std::string shapePredictorDir
         = R"(utils\shape_predictor_68_face_landmarks.dat)";
 
     // init stream from webCam.
@@ -66,7 +66,7 @@ int main(void)
 
     // init face detector & shape predictor
     auto detector = dlib::get_frontal_face_detector();
-    dlib::shape_predictor predictor;
+    dlib::shape_predictor predictor{};
     dlib::deserialize(shapePredictorDir) >> predictor;
 
     while (cv::waitKey(30) != 27) // 27 is the ascii code for ESC key.
@@ -96,9 +96,9 @@ int main(void)
                 shapes[0].part(45), shapes[0].part(46), shapes[0].part(47)
             };
 
-            double leftAspectRatio  = eye_aspect_ratio(leftEye);
-            double rightAspectRatio = eye_aspect_ratio(rightEye);
-            double averageAspectRatio
+            const auto leftAspectRatio  = eye_aspect_ratio(leftEye);
+            const auto rightAspectRatio = eye_aspect_ratio(rightEye);
+            const auto averageAspectRatio
                 = static_cast<double>((leftAspectRatio + rightAspectRatio) / 2);
             std::cout << "Eye aspect ratio: " << averageAspectRatio << '\n';
 
@@ -137,7 +137,6 @@ int main(void)
                     }
                 }
             }
-
             else
             {
                 alarm_on = false;
